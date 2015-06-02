@@ -1,6 +1,7 @@
 {
     "name": "Laravel Extension",
     "description": "Laravel Extension, reusable components",
+    "license": "GPL-3.0",
     "type": "library",
     "require": {
         "zendframework/zend-filter": "2.3.*",
