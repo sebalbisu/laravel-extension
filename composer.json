@@ -1,0 +1,15 @@
+{
+    "name": "Laravel Extension",
+    "description": "Laravel Extension, reusable components",
+    "type": "library",
+    "require": {
+        "zendframework/zend-filter": "2.3.*",
+        "zendframework/zend-i18n": "2.3.*",
+        "zendframework/zend-servicemanager": "2.3.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sebalbisu\\Laravel": "src/"
+        }
+    }
+}
