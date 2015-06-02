@@ -1,6 +1,7 @@
 <?php namespace Sebalbisu\Laravel\Auth;
  
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Auth\AuthManager;
 
 class Provider extends ServiceProvider
 {

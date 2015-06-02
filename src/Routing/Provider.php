@@ -12,7 +12,7 @@ class Provider extends ServiceProvider
     {
         $this->app->bind(
             'router.web_resource',
-            'Sebalbisu\Laravel\Routing\WebResourceRegistrar'
+            __NAMESPACE__ . '\WebResourceRegistrar'
         );
     }
 

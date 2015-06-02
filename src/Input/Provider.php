@@ -18,21 +18,21 @@ class Provider extends ServiceProvider {
         });
 
         $this->app->resolving(
-            'Sebalbisu\Laravel\Input\Runnable', 
+            __NAMESPACE__ . '\Runnable', 
             function($object, $app) { $object->run(); }
         );
 
         $this->app->resolving(
-            'Sebalbisu\Laravel\Input\Request\IFailListening', 
+            __NAMESPACE__ . '\Request\IFailListening', 
             function($object, $app) { $object->listenInputFail(); }
         );
 
         $this->app->singleton('input.default-request-events-to-listen', 
             function() {
                 return [
-                    'Sebalbisu\Laravel\Input\Events\NotFound',
-                    'Sebalbisu\Laravel\Input\Events\AccessDenied',
-                    'Sebalbisu\Laravel\Input\Events\ValidationFail',
+                    __NAMESPACE__ . '\Events\NotFound',
+                    __NAMESPACE__ . '\Events\AccessDenied',
+                    __NAMESPACE__ . '\Events\ValidationFail',
                 ];
             }
         );

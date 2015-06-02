@@ -5,6 +5,7 @@ use Sebalbisu\Laravel\Input\Exceptions\NotFound as ExceptionNotFound;
 use Sebalbisu\Laravel\Input\Exceptions\AccessDenied as ExceptionAccessDenied;
 use Sebalbisu\Laravel\Input\Exceptions\Validation as ExceptionValidation;
 use Sebalbisu\Laravel\Validation\Factory as ValidationFactory;
+use Illuminate\Validation\Validator;
 use Sebalbisu\Laravel\Filter\Filter;
 
 trait InputTrait {
@@ -25,6 +26,7 @@ trait InputTrait {
         'init'       => false,
         'input'      => false,
         'auth'       => false,
+        'sanitize'   => false,
         'filter'     => false,
         'validation' => false,
         'escape'     => false,
@@ -60,7 +62,7 @@ trait InputTrait {
         if(!$this->skip['input']
         && method_exists($this, 'input'))
         {
-            $this->input = app()->call([$this, 'input']) ? [];
+            $this->input = app()->call([$this, 'input']) ?: [];
 
             foreach($this->input as $input)
             {
@@ -79,6 +81,11 @@ trait InputTrait {
         && method_exists($this, 'sanitize'))
         {
             $sanitizers = app()->call([$this, 'sanitize']);
+
+            if($sanitizers instanceof Validator)
+            {
+                $sanitizers = ['validation' => $sanitizers];
+            }
 
             if(is_null($sanitizers)) $sanitizers = [];
 
@@ -105,7 +112,7 @@ trait InputTrait {
         if(!$this->skip['inputAfter']
         && method_exists($this, 'inputAfter'))
         {
-            $this->inputAfter = app()->call([$this, 'inputAfter']) ? [];
+            $this->inputAfter = app()->call([$this, 'inputAfter']) ?: [];
 
             foreach($this->inputAfter as $input)
             {
@@ -113,7 +120,7 @@ trait InputTrait {
             }
         }
 
-        return (!this->skip['handle'] && method_exists($this, 'handle')) ? 
+        return (!$this->skip['handle'] && method_exists($this, 'handle')) ? 
             app()->call([$this, 'handle']) :
             $this;
     }
@@ -180,17 +187,23 @@ trait InputTrait {
 
     public function getInputs($i = null)
     {
-        return ($i !== null) $this->input[$i] : $this->input;
+        return ($i !== null) ? $this->input[$i] : $this->input;
     }
 
     public function getInputsAfter($i = null)
     {
-        return ($i !== null) $this->inputAfter[$i] : $this->inputAfter;
+        return ($i !== null) ? $this->inputAfter[$i] : $this->inputAfter;
     }
 
     static public function eventDispatcher(EventDispatcher $dispatcher = null)
     {
         return app('input.event-dispatcher');
+    }
+
+    protected function fire()
+    {
+        return call_user_func_array(
+            [self::eventDispatcher(), 'fire'], func_get_args());
     }
 
     static public function build()
@@ -203,6 +216,7 @@ trait InputTrait {
 
     static public function perform()
     {
-        return static::build(func_get_args())->run();
+        return call_user_func_array(
+            get_called_class() . '::build', func_get_args())->run();
     }
 }

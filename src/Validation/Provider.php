@@ -7,9 +7,9 @@ class Provider extends ServiceProvider {
 
     protected $extensions = 
     [
-        'invalid' => 'Sebalbisu\Laravel\Validation\Extensions\Invalid',
-        'skip' => 'Sebalbisu\Laravel\Validation\Extensions\Skip',
-        'time' => 'Sebalbisu\Laravel\Validation\Extensions\Time',
+        'invalid' => __NAMESPACE__ . '\Extensions\Invalid',
+        'skip' => __NAMESPACE__ . '\Extensions\Skip',
+        'time' => __NAMESPACE__ . '\Extensions\Time',
     ];
 
     public function boot()
