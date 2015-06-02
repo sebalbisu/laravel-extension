@@ -1,5 +1,5 @@
 {
-    "name": "Laravel Extension",
+    "name": "sebalbisu/laravel-extension",
     "description": "Laravel Extension, reusable components",
     "license": "GPL-3.0",
     "type": "library",
