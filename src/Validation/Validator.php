@@ -56,6 +56,13 @@ class Validator extends IlluminateValidator
      *  invalid -> return false in validation
      *  array('item1', 'item2', ...) -> parse as 'item1,item2,...'
      *
+     *  values:
+     *  true        => skip
+     *  null        => skip
+     *  false       => invalid
+     *  []          => invalid
+     *  ['ff','ww'] => 'ff,ww'
+     *
      */
     public function parseVarsInRules($vars)
     {
@@ -74,7 +81,7 @@ class Validator extends IlluminateValidator
                 {
                     if(strpos($rules[$i], $search))
                     {
-                        if($replace === null)
+                        if($replace === null || $replace === true)
                         {
                             $this->rules[$attr][$i] = 'skip';
                         }
