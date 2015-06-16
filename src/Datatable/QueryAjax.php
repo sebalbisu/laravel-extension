@@ -1,6 +1,6 @@
 <?php namespace Sebalbisu\Laravel\Datatable;
 
-class Query {
+class QueryAjax {
 
     protected $repoCb;
 
