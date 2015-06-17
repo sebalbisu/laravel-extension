@@ -98,9 +98,15 @@ class QueryAjax {
         $content = str_replace(
             array_keys($replacers), array_values($replacers), $content
         );
-        $content = preg_replace('@<td>[\s\n]*(.*)[\s\n]*</td>@', '"\1",', $content);
+        //put td in ""
+        $content = preg_replace('@\s*<td[^>]*>@', '"', $content);
+        $content = preg_replace('@\s*</td>@', '",', $content);
+        //last td "", to ""
         $content = preg_replace('/,\s*\n+\s*]/', "\n]", $content);
+        //last row [], to []
         $content = rtrim($content, " \t\n\r,");
+        //deletes all new lines in json
+        $content = preg_replace("@\s+@", ' ', $content);
 
         return $content;
     }
