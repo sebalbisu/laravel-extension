@@ -3,4 +3,6 @@
 class AccessDenied extends Input
 {
     protected $message = 'Access denied';
+
+    protected $code = 403;
 }

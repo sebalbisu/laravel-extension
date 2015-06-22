@@ -19,12 +19,20 @@ class Provider extends ServiceProvider {
 
         $this->app->resolving(
             __NAMESPACE__ . '\Runnable', 
-            function($object, $app) { $object->run(); }
+
+            function($object, $app) 
+            { 
+                $object->run();
+            }
         );
 
         $this->app->resolving(
             __NAMESPACE__ . '\Request\IFailListening', 
-            function($object, $app) { $object->listenInputFail(); }
+
+            function($object, $app) 
+            { 
+                $object->listenInputFail(); 
+            }
         );
 
         $this->app->singleton('input.default-request-events-to-listen', 

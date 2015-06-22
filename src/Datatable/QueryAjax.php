@@ -2,23 +2,55 @@
 
 class QueryAjax {
 
-    protected $repoCb;
+    protected $id;
 
-    protected $repoArgs;
+    protected $data;
 
     protected $viewResource;
 
     protected $pagination;
 
-    public function __construct($view, $repoCb, array $repoArgs = [], $pag = [])
+    public function __construct($id, $data, $view, $pag = [])
     {
+        $this->id = $id;
+
         $this->viewResource = $view;
 
-        $this->repoCb = $repoCb;
-
-        $this->repoArgs = $repoArgs;
+        $this->data = $data;
 
         $this->pagination = $pag;
+    }
+
+    public function renderTable(array $options = [])
+    {
+        $variables = array_merge($options, [
+            'head' => true,
+            'body' => false,
+            'renderJs' => true,
+            'id' => $this->id,
+        ]);
+
+        return \view($this->viewResource, $variables)->render();
+    }
+
+    public function renderTableBody()
+    {
+        $pag = self::getPagination($this->pagination);
+        $pag['withTotal'] = true;
+
+        $result = is_callable($this->data) ?
+            app()->call($this->data, [$pag]) :
+            $this->data;
+
+        $content = $this->getTableBody($result['rows']);
+
+        $contentJson = $this->parseTableBodyToJson($content);
+
+        $response = $this->addContentHeaders($contentJson, $result['total']);
+
+        header('Content-Type', 'application/json');
+
+        return $response;
     }
 
     static public function getPagination(array $pag = [])
@@ -34,32 +66,6 @@ class QueryAjax {
         ];
 
         return array_merge($inputPag, $pag);
-    }
-
-    public function renderTable(array $options = [])
-    {
-        $variables = array_merge($options, ['head' => true, 'body' => false, 'renderJs' => true ]);
-
-        return \view($this->viewResource, $variables)->render();
-    }
-
-    public function renderTableBody()
-    {
-        $pag = self::getPagination($this->pagination);
-        $pag['withTotal'] = true;
-
-        $args = array_merge($this->repoArgs, ['pag' => $pag]);
-
-        $result = app()->call($this->repoCb, $args);
-
-        $content = $this->getTableBody($result['rows']);
-        $contentJson = $this->parseTableBodyToJson($content);
-
-        $response = $this->addContentHeaders($contentJson, $result['total']);
-
-        header('Content-Type', 'application/json');
-
-        return $response;
     }
 
     protected function addContentHeaders($content, $total)
@@ -79,7 +85,8 @@ class QueryAjax {
             [
                 'head' => false, 
                 'body' => true, 
-                'rows' => $rows
+                'rows' => $rows,
+                'id'   => $this->id,
             ])
             ->render();
     }
@@ -109,5 +116,10 @@ class QueryAjax {
         $content = preg_replace("@\s+@", ' ', $content);
 
         return $content;
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 }

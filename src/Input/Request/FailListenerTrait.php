@@ -24,16 +24,16 @@ trait FailListenerTrait {
 
     public function listenInputFail()
     {
-        $events = $this->inputEvents ?: 
+        $this->inputEvents = $this->inputEvents ?: 
             app('input.default-request-events-to-listen');
 
         app('input.event-exception-dispatcher')
-            ->listen($events, [$this, 'inputFailListener']);
+            ->listen($this->inputEvents, [$this, 'inputFailListener']);
     }
 
     public function noListenInputFail()
     {
-        foreach($this->eventsInput as $event)
+        foreach($this->inputEvents as $event)
         {
             app('input.event-exception-dispatcher')
                 ->forget($event);

@@ -2,6 +2,7 @@
 
 use Illuminate\Validation\Validator as IlluminateValidator;
 use Illuminate\Support\MessageBag;
+use Illuminate\Support\Collection;
 
 class Validator extends IlluminateValidator
 {
@@ -69,6 +70,8 @@ class Validator extends IlluminateValidator
         foreach($vars as $key => $value)
         {
             $search = '{'.$key.'}';
+
+            if($value instanceof Collection) $value = $value->toArray();
 
             if(is_array($value) && empty($value)) $value = false;
             if($value === '') $value = false;

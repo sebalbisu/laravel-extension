@@ -3,4 +3,6 @@
 class NotFound extends Input
 {
     protected $message = 'Not Found';
+
+    protected $code = 404;
 }

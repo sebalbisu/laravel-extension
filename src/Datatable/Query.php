@@ -2,47 +2,24 @@
 
 class Query {
 
-    protected $repoCb;
-
-    protected $repoArgs;
+    protected $data;
 
     protected $viewResource;
 
     protected $pagination;
 
-    public function __construct($view, $repoCb, array $repoArgs = [], $pag = [])
+    public function __construct($data, $view)
     {
         $this->viewResource = $view;
 
-        $this->repoCb = $repoCb;
-
-        $this->repoArgs = $repoArgs;
-
-        $this->pagination = $pag;
-    }
-
-    static public function getPagination(array $pag = [])
-    {
-        $col = \Request::input('order.0.column');
-
-        $inputPag = [
-            'limit'    => $limit = \Request::input('length') ?: 10, 
-            'offset'   => $offset = \Request::input('start') ?: 0, 
-            'page'     => floor($offset / $limit) + 1,
-            'order'    => \Request::input("columns.$col.name"),
-            'dir'      => \Request::input('order.0.dir', 'asc'),
-        ];
-
-        return array_merge($inputPag, $pag);
+        $this->data = $data;
     }
 
     public function renderTable($options = [])
     {
-        $pag = self::getPagination($this->pagination);
-
-        $args = array_merge($this->repoArgs, ['pag' => $pag]);
-
-        $result = app()->call($this->repoCb, $args);
+        $result = is_callable($this->data) ?
+            app()->call($this->data) :
+            $this->data;
 
         $variables = array_merge($options, 
         [
