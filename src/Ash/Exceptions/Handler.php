@@ -1,6 +1,6 @@
-<?php namespace Sebalbisu\Laravel\Input\Exceptions;
+<?php namespace Sebalbisu\Laravel\Ash\Exceptions;
 
-use Sebalbisu\Laravel\Input\Events;
+use Sebalbisu\Laravel\Ash\Events;
 
 class Handler {
 
@@ -22,7 +22,7 @@ class Handler {
                 break;
 
             case $e instanceof Validation:
-                $event = new Events\ValidationFail($e->validator()); 
+                $event = new Events\ValidationFail($e->validator());
                 $response = self::eventDispatcher()->fire($event, [], $halt = true);
                 if($response) return $response;
                 break;
@@ -34,6 +34,6 @@ class Handler {
 
     static public function eventDispatcher(EventDispatcher $dispatcher = null)
     {
-        return app('input.event-exception-dispatcher');
+        return app('ash.event-exception-dispatcher');
     }
 }

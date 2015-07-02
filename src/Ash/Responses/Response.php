@@ -1,4 +1,4 @@
-<?php namespace Sebalbisu\Laravel\Input\Responses; 
+<?php namespace Sebalbisu\Laravel\Ash\Responses; 
 
 abstract class Response {
 

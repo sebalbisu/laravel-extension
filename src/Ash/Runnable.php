@@ -1,4 +1,4 @@
-<?php namespace Sebalbisu\Laravel\Input;
+<?php namespace Sebalbisu\Laravel\Ash;
 
 interface Runnable {
 

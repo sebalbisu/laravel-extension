@@ -1,14 +1,14 @@
-<?php namespace Sebalbisu\Laravel\Input;
+<?php namespace Sebalbisu\Laravel\Ash;
 
-use Sebalbisu\Laravel\Input\Exceptions;
-use Sebalbisu\Laravel\Input\Responses;
-use Sebalbisu\Laravel\Input\Responses\Response;
+use Sebalbisu\Laravel\Ash\Exceptions;
+use Sebalbisu\Laravel\Ash\Responses;
+use Sebalbisu\Laravel\Ash\Responses\Response;
 use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 use Sebalbisu\Laravel\Validation\Factory as ValidationFactory;
 use Illuminate\Validation\Validator;
 use Sebalbisu\Laravel\Filter\Filter;
 
-abstract class Input {
+abstract class Ash {
 
     static protected $stepsList = ['authorize', 'sanitize', 'handle'];
 
@@ -238,13 +238,13 @@ abstract class Input {
             if($response instanceof Response)
             {
                 if($response->isAuthorizeType() && $response->isNotFound())
-                    throw new Exceptions\NotFound();
+                    $this->throwNotFound();
 
                 if($response->isAuthorizeType() && $response->isAccessDenied())
-                    throw new Exceptions\AccessDenied();
+                    $this->throwAccessDenied();
 
                 if($response->isValidateType() && $response->failed())
-                    throw new Exceptions\Validation($response->getValidator());
+                    $this->throwValidation($response->getValidator());
             }
 
             if($response === null) $response = $this;
@@ -252,7 +252,6 @@ abstract class Input {
 
         return $response;
     }
-
 
     protected function resetState()
     {
@@ -262,9 +261,27 @@ abstract class Input {
     }
 
 
+    protected function throwNotFound()
+    {
+        throw new Exceptions\NotFound();
+    }
+
+
+    protected function throwAccessDenied()
+    {
+        throw new Exceptions\AccessDenied();
+    }
+
+
+    protected function throwValidation($validator)
+    {
+        throw new Exceptions\Validation($validator);
+    }
+
+
     static public function eventDispatcher()
     {
-        return app('input.event-dispatcher');
+        return app('ash.event-dispatcher');
     }
 
 

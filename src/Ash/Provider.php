@@ -1,4 +1,4 @@
-<?php namespace Sebalbisu\Laravel\Input;
+<?php namespace Sebalbisu\Laravel\Ash;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Events\Dispatcher as EventDispatcher;
@@ -7,12 +7,12 @@ class Provider extends ServiceProvider {
 
     public function register()
     {
-        $this->app->singleton('input.event-dispatcher', function($app)
+        $this->app->singleton('ash.event-dispatcher', function($app)
         {
             return new EventDispatcher(app());
         });
 
-        $this->app->singleton('input.event-exception-dispatcher', function($app)
+        $this->app->singleton('ash.event-exception-dispatcher', function($app)
         {
             return new EventDispatcher(app());
         });
@@ -31,11 +31,11 @@ class Provider extends ServiceProvider {
 
             function($object, $app) 
             { 
-                $object->listenInputFail(); 
+                $object->listenAshFail(); 
             }
         );
 
-        $this->app->singleton('input.default-request-events-to-listen', 
+        $this->app->singleton('ash.default-request-events-to-listen', 
             function() {
                 return [
                     __NAMESPACE__ . '\Events\NotFound',

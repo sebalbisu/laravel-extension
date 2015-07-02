@@ -1,4 +1,4 @@
-<?php namespace Sebalbisu\Laravel\Input\Events;
+<?php namespace Sebalbisu\Laravel\Ash\Events;
 
 class ValidationFail {
 

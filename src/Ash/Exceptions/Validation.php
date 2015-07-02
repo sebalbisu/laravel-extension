@@ -1,6 +1,6 @@
-<?php namespace Sebalbisu\Laravel\Input\Exceptions;
+<?php namespace Sebalbisu\Laravel\Ash\Exceptions;
 
-class Validation extends Input
+class Validation extends Ash
 {
     protected $message = 'Invalid input';
 

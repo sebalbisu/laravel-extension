@@ -1,14 +1,14 @@
-<?php namespace Sebalbisu\Laravel\Input\Request;
+<?php namespace Sebalbisu\Laravel\Ash\Request;
 
-use Sebalbisu\Laravel\Input\Events;
+use Sebalbisu\Laravel\Ash\Events;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 trait FailListenerTrait {
 
-    protected $inputEvents;
+    protected $ashEvents;
 
-    public function onInputFail($urlOrCb)
+    public function onAshFail($urlOrCb)
     {
         if(is_callable($urlOrCb))
         {
@@ -22,25 +22,25 @@ trait FailListenerTrait {
         }
     }
 
-    public function listenInputFail()
+    public function listenAshFail()
     {
-        $this->inputEvents = $this->inputEvents ?: 
-            app('input.default-request-events-to-listen');
+        $this->ashEvents = $this->ashEvents ?: 
+            app('ash.default-request-events-to-listen');
 
-        app('input.event-exception-dispatcher')
-            ->listen($this->inputEvents, [$this, 'inputFailListener']);
+        app('ash.event-exception-dispatcher')
+            ->listen($this->ashEvents, [$this, 'ashFailListener']);
     }
 
-    public function noListenInputFail()
+    public function noListenAshFail()
     {
-        foreach($this->inputEvents as $event)
+        foreach($this->ashEvents as $event)
         {
-            app('input.event-exception-dispatcher')
+            app('ash.event-exception-dispatcher')
                 ->forget($event);
         }
     }
 
-    public function inputFailListener($event)
+    public function ashFailListener($event)
     {
         if ($event instanceof Events\NotFound)
         {
