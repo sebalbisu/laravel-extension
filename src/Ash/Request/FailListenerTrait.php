@@ -8,19 +8,7 @@ trait FailListenerTrait {
 
     protected $ashEvents;
 
-    public function onAshFail($urlOrCb)
-    {
-        if(is_callable($urlOrCb))
-        {
-            return call_user_func($urlOrCb, $this);
-        }
-        else
-        {
-            $this->redirect = $urlOrCb;
-
-            return $this;
-        }
-    }
+    protected $customCatcher;
 
     public function listenAshFail()
     {
@@ -42,13 +30,20 @@ trait FailListenerTrait {
 
     public function ashFailListener($event)
     {
+        if($this->customCatcher)
+        {
+            $response = call_user_func($this->customCatcher, $event);
+
+            if($response) return $response;
+        }
+
         if ($event instanceof Events\NotFound)
         {
-            return new NotFoundHttpException();
+           throw new NotFoundHttpException();
         }
         elseif ($event instanceof Events\AccessDenied)
         {
-            return new AccessDeniedHttpException(403);
+            throw new AccessDeniedHttpException(403);
         } 
         elseif ($event instanceof Events\ValidationFail)
         {
@@ -56,6 +51,19 @@ trait FailListenerTrait {
 
             return $this->response($msgs);
         }
+    }
+
+    public function onAshFail($urlOrCb)
+    {
+        if(is_callable($urlOrCb))
+        {
+            $this->customCatcher = $urlOrCb;
+        } else {
+            //redirect on fail validations
+            $this->redirect = $urlOrCb;
+        }
+
+        return $this;
     }
 
 }

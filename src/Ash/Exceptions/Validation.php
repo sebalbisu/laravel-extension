@@ -1,6 +1,8 @@
 <?php namespace Sebalbisu\Laravel\Ash\Exceptions;
 
-class Validation extends Ash
+use Sebalbisu\Laravel\Ash\Events;
+
+class Validation extends HttpResponseException
 {
     protected $message = 'Invalid input';
 
@@ -34,5 +36,12 @@ class Validation extends Ash
     public function errors()
     {
         return $this->validator->errors();
+    }
+
+    public function getResponse()
+    {
+        $event = new Events\ValidationFail($this->validator()); 
+
+        return $this->makeResponse($event);
     }
 }
